@@ -1,4 +1,4 @@
-package edu.eci.arsw.tests.impl;
+package edu.eci.arsw.persistence;
 
 import edu.eci.arsw.model.Blueprint;
 import edu.eci.arsw.model.Point;

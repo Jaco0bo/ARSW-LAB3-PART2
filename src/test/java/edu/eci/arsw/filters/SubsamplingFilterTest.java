@@ -1,4 +1,4 @@
-package edu.eci.arsw.tests.impl;
+package edu.eci.arsw.filters;
 
 import edu.eci.arsw.filters.BluePrintsFilter;
 import edu.eci.arsw.filters.SubsamplingFilter;
