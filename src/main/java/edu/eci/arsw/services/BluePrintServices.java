@@ -5,6 +5,7 @@
  */
 package edu.eci.arsw.services;
 
+import edu.eci.arsw.blueprints.controllers.ResourceNotFoundException;
 import edu.eci.arsw.filters.BluePrintsFilter;
 import edu.eci.arsw.model.Blueprint;
 import edu.eci.arsw.persistence.BlueprintNotFoundException;
@@ -32,11 +33,11 @@ public class BluePrintServices {
         bpp.saveBlueprint(bp);
     }
     
-    public Set<Blueprint> getAllBlueprints() throws BlueprintPersistenceException{
+    public Set<Blueprint> getAllBlueprints() throws ResourceNotFoundException, BlueprintPersistenceException {
         Set<Blueprint> blueprints = bpp.getAllBlueprints();
 
         if (blueprints == null || blueprints.isEmpty()) {
-            throw new BlueprintPersistenceException("No blueprints found");
+            throw new ResourceNotFoundException();
         }
 
         Set<Blueprint> filtered = new java.util.HashSet<>();

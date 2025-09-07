@@ -2,12 +2,14 @@ package edu.eci.arsw.filters;
 
 import edu.eci.arsw.model.Blueprint;
 import edu.eci.arsw.model.Point;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Component("subsamplingFilter")
+@Primary
 public class SubsamplingFilter implements BluePrintsFilter {
     @Override
     public Blueprint applyFilter(Blueprint bp) {

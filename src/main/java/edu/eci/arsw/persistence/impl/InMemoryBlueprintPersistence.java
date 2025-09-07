@@ -27,14 +27,13 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     private final Map<Tuple<String,String>,Blueprint> blueprints=new HashMap<>();
 
     public InMemoryBlueprintPersistence() {
-        //load stub data
         Point[] pts1 = new Point[]{new Point(10, 10), new Point(20, 20)};
-        Blueprint bp1 = new Blueprint("john", "house", pts1);
+        Blueprint bp1 = new Blueprint("andres", "house", pts1);
         blueprints.put(new Tuple<>(bp1.getAuthor(), bp1.getName()), bp1);
 
         // Plano 2 - Autor: john (mismo autor que bp1)
         Point[] pts2 = new Point[]{new Point(30, 30), new Point(40, 40)};
-        Blueprint bp2 = new Blueprint("john", "car", pts2);
+        Blueprint bp2 = new Blueprint("andres", "car", pts2);
         blueprints.put(new Tuple<>(bp2.getAuthor(), bp2.getName()), bp2);
 
         // Plano 3 - Autor: alice (autor diferente)

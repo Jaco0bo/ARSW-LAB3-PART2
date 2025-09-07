@@ -67,7 +67,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>edu.eci.arsw.blueprintsapi.BlueprintsAPIApplication</mainClass>
+					<mainClass>edu.eci.arsw.Application</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
