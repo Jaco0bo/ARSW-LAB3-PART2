@@ -178,4 +178,4 @@ Escriba su análisis y la solución aplicada en el archivo ANALISIS_CONCURRENCIA
 
 ![](img/media/partefinal.png)
 
-**Con estos cambios garantizamos que la API pueda atender múltiples hilos de forma segura sin degradar el desempeño significativamente. Para ver un informe mas detallado de los cambios y los motivos de estos ver el archivo ```ANALISIS_CONCURRENCIA.txt``` ubicado en la raiz del proyecto.
+**Con estos cambios garantizamos que la API pueda atender múltiples hilos de forma segura sin degradar el desempeño significativamente. Para ver un informe mas detallado de los cambios y los motivos de estos ver el archivo ```ANALISIS_CONCURRENCIA.txt``` ubicado en la raiz del proyecto.**
