@@ -16,10 +16,7 @@ import edu.eci.arsw.services.BluePrintServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -29,7 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/blueprints")
 public class BlueprintAPIController {
     @Autowired
-    BluePrintServices services;
+    private BluePrintServices services;
+
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<?> manejadorGetBluePrints() {
@@ -62,6 +60,31 @@ public class BlueprintAPIController {
             Blueprint data = services.getBlueprint(author, name);
             return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
         } catch (BlueprintNotFoundException ex) {
+            Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("NO SE ENCONTRO NINGUN PLANO POR ESE AUTOR", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<?> saveBluePrint(@RequestBody Blueprint bp){
+        try {
+            services.addNewBlueprint(bp);
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        } catch (BlueprintPersistenceException ex) {
+            Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+        }
+    }
+
+    @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.PUT)
+    public ResponseEntity<?> modifyBluePrint(@RequestBody Blueprint bp, @PathVariable("author") String author, @PathVariable("bpname") String bpname) {
+        try {
+            if (!bp.getAuthor().equals(author) || !bp.getName().equals(bpname)) {
+                return new ResponseEntity<>("EL AUTOR O PLANO NO COINCIDE", HttpStatus.BAD_REQUEST);
+            }
+            services.modifyBluePrint(bp);
+            return new ResponseEntity<>( HttpStatus.ACCEPTED);
+        } catch (BlueprintPersistenceException ex) {
             Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("NO SE ENCONTRO NINGUN PLANO POR ESE AUTOR", HttpStatus.NOT_FOUND);
         }

@@ -5,10 +5,13 @@
  */
 package edu.eci.arsw.persistence;
 
+import edu.eci.arsw.blueprints.controllers.BluePrintError;
 import edu.eci.arsw.model.Blueprint;
+import edu.eci.arsw.model.Point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
@@ -24,7 +27,9 @@ public interface BlueprintsPersistence {
      */
     public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException;
 
-    public HashSet<Blueprint> getAllBlueprints() throws BlueprintPersistenceException;
+    public void modifyBluePrint(Blueprint bp) throws BlueprintPersistenceException;
+
+    public Set<Blueprint> getAllBlueprints() throws BlueprintPersistenceException;
     
     /**
      * 
@@ -41,6 +46,7 @@ public interface BlueprintsPersistence {
      * @return all he blueprints by the same actor
      * @throws BlueprintNotFoundException if there is no such blueprint
      */
-    public HashSet<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException;
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException;
 
+    public Blueprint setBlueprint(String author, String name, Point[] puntos) throws BluePrintError;
 }

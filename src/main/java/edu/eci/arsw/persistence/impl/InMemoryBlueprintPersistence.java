@@ -5,6 +5,7 @@
  */
 package edu.eci.arsw.persistence.impl;
 
+import edu.eci.arsw.blueprints.controllers.BluePrintError;
 import edu.eci.arsw.model.Blueprint;
 import edu.eci.arsw.model.Point;
 import edu.eci.arsw.persistence.BlueprintNotFoundException;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -24,7 +26,7 @@ import java.util.Set;
 @Repository
 public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
 
-    private final Map<Tuple<String,String>,Blueprint> blueprints=new HashMap<>();
+    private final ConcurrentHashMap<Tuple<String,String>,Blueprint> blueprints=new ConcurrentHashMap<>();
 
     public InMemoryBlueprintPersistence() {
         Point[] pts1 = new Point[]{new Point(10, 10), new Point(20, 20)};
@@ -45,12 +47,20 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     
     @Override
     public void saveBlueprint(Blueprint bp) throws BlueprintPersistenceException {
-        if (blueprints.containsKey(new Tuple<>(bp.getAuthor(),bp.getName()))){
+        Tuple<String, String> key = new Tuple<>(bp.getAuthor(), bp.getName());
+        Blueprint existing = blueprints.putIfAbsent(key, bp);
+        if (existing != null) {
             throw new BlueprintPersistenceException("The given blueprint already exists: "+bp);
         }
-        else{
-            blueprints.put(new Tuple<>(bp.getAuthor(),bp.getName()), bp);
-        }        
+    }
+
+    @Override
+    public void modifyBluePrint(Blueprint bp) throws BlueprintPersistenceException {
+        Tuple<String, String> key = new Tuple<>(bp.getAuthor(), bp.getName());
+        Blueprint existing = blueprints.replace(key, bp);
+        if (existing == null) {
+            throw new BlueprintPersistenceException("The given blueprint does not exist: " + bp);
+        }
     }
 
     @Override
@@ -59,14 +69,14 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         if (blueprint == null) {
             throw new BlueprintNotFoundException("Blueprint not found for author: " + author + " and name: " + bprintname);
         }
-        return blueprint;
+        return deepCopyBlueprint(blueprint);
     }
 
     @Override
-    public HashSet<Blueprint> getAllBlueprints() throws BlueprintPersistenceException {
-        HashSet<Blueprint> result = new HashSet<>();
+    public Set<Blueprint> getAllBlueprints() throws BlueprintPersistenceException {
+        Set<Blueprint> result = new HashSet<>();
         for (Blueprint bp : blueprints.values()) {
-            result.add(bp);
+            result.add(deepCopyBlueprint(bp));
         }
         if (result.isEmpty()) {
             throw new BlueprintPersistenceException("No blueprints found");
@@ -75,11 +85,11 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     }
 
     @Override
-    public HashSet<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
-        HashSet<Blueprint> result = new HashSet<>();
+    public Set<Blueprint> getBlueprintsByAuthor(String author) throws BlueprintNotFoundException {
+        Set<Blueprint> result = new HashSet<>();
         for (Blueprint bp : blueprints.values()) {
             if (bp.getAuthor().equals(author)) {
-                result.add(bp);
+                result.add(deepCopyBlueprint(bp));
             }
         }
         if (result.isEmpty()) {
@@ -87,5 +97,30 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         }
         return result;
     }
-    
+
+    @Override
+    public Blueprint setBlueprint(String author, String name, Point[] puntos) {
+        try {
+            Point[] pcopy = deepCopyPoints(puntos);
+            return new Blueprint(author, name, pcopy);
+        } catch (BluePrintError ex) {
+            throw new BluePrintError("Error setting blueprint: " + ex);
+        }
+    }
+
+    private Blueprint deepCopyBlueprint(Blueprint bp) {
+        Point[] pts = bp.getPoints().toArray(new Point[0]);
+        Point[] ptsCopy = deepCopyPoints(pts);
+        return new Blueprint(bp.getAuthor(), bp.getName(), ptsCopy);
+    }
+
+    private Point[] deepCopyPoints(Point[] pts) {
+        if (pts == null) return null;
+        Point[] copy = new Point[pts.length];
+        for (int i = 0; i < pts.length; i++) {
+            Point p = pts[i];
+            copy[i] = new Point(p.getX(), p.getY());
+        }
+        return copy;
+    }
 }

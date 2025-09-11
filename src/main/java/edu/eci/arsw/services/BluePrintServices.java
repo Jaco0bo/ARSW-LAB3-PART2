@@ -8,6 +8,7 @@ package edu.eci.arsw.services;
 import edu.eci.arsw.blueprints.controllers.ResourceNotFoundException;
 import edu.eci.arsw.filters.BluePrintsFilter;
 import edu.eci.arsw.model.Blueprint;
+import edu.eci.arsw.model.Point;
 import edu.eci.arsw.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.persistence.BlueprintsPersistence;
@@ -31,6 +32,10 @@ public class BluePrintServices {
 
     public void addNewBlueprint(Blueprint bp) throws BlueprintPersistenceException {
         bpp.saveBlueprint(bp);
+    }
+
+    public void modifyBluePrint(Blueprint bp) throws BlueprintPersistenceException {
+        bpp.modifyBluePrint(bp);
     }
     
     public Set<Blueprint> getAllBlueprints() throws ResourceNotFoundException, BlueprintPersistenceException {
@@ -83,5 +88,4 @@ public class BluePrintServices {
 
         return filtered;
     }
-    
 }
