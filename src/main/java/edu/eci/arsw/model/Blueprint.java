@@ -52,8 +52,7 @@ public class    Blueprint {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        return hash;
+        return Objects.hash(author, name, points);
     }
 
     @Override
@@ -78,14 +77,10 @@ public class    Blueprint {
             return false;
         }
         for (int i=0;i<this.points.size();i++){
-            if (this.points.get(i)!=other.points.get(i)){
+            if (this.points.get(i).equals(other.points.get(i))){
                 return false;
             }
         }
-        
         return true;
     }
-    
-    
-    
 }
